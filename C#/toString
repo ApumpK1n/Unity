@@ -1,5 +1,5 @@
-## 将对象变成字符串类型
-### Python
+== 将对象变成字符串类型
+=== Python
 
 class CStr(object)
   def __init__(self, string):
