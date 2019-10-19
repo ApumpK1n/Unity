@@ -1,7 +1,7 @@
 ## 将对象变成字符串类型
 ### Python
 	class CStr(object)
-		def __init__(self, string):
+	 	def __init__(self, string):
 			self.m_string = string
   		
 		def __str__(self):
