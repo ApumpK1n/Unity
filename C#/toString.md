@@ -2,10 +2,11 @@
 ### Python
 ```
 class CStr(object)
-  def __init__(self, string):
-    self.m_string = string
-  def __str__(self):
-    return "I am %s" % self.m_string
+    def __init__(self, string):
+        self.m_string = string
+        
+    def __str__(self):
+        return "I am %s" % self.m_string
    
 eg:
 oStr = CStr("PumpK1n")
