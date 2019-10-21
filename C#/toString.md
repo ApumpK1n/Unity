@@ -13,3 +13,20 @@ oStr = CStr("PumpK1n")
 print oStr
 output: "I am PumpK1n"
 ```
+
+### CSharp
+```
+class CStr
+{
+    private string Name;
+    public CStr(string s)
+    {
+        Name = s;
+    }
+    
+    public override String ToString()
+    {
+        return "I am" + Name;
+    }
+}
+```
