@@ -1,23 +1,33 @@
 
 
 using UnityEngine;
-using System;
+using System.Collections;
 using System.Collections.Generic;
-
+using System.Threading;
 
 namespace Coroutine{
 
-    public class CoroutineMgr : MonoBeahavior{
+    public class CoroutineMgr
+    {
         
+        public static CoroutineMgr Instance = null;
+
+        public static CoroutineMgr GetInstance(){
+            if (Instance == null){
+                Instance = new CoroutineMgr();
+            }
+            return Instance;
+        }
+
         private Pool m_pool = new Pool();
 
-        public void StartCoroutine<T>() where T: IEnumerator{
+        public Coroutine StartCoroutine(IEnumerator iter){
 
-            this.m_pool.StartCoroutine<T>();
+            return this.m_pool.StartCoroutine(iter);
         }
 
 
-        void LateUpdate(){
+        public void LateUpdate(){
             
             Coroutine coroutine = this.m_pool.GetCurrentCoroutine();
             if (coroutine == null) return;

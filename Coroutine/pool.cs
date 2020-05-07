@@ -1,6 +1,7 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Coroutine{
@@ -10,9 +11,10 @@ namespace Coroutine{
         private Stack<Coroutine> m_Coroutines = new Stack<Coroutine>();
 
 
-        public void StartCoroutine<T>() where T: IEnumerator{
-            Coroutine coroutine = new Coroutine(T);
+        public Coroutine StartCoroutine(IEnumerator iter){
+            Coroutine coroutine = new Coroutine(iter);
             this.m_Coroutines.Push(coroutine);
+            return coroutine;
         }
 
 
