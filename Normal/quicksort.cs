@@ -21,6 +21,33 @@ class Program
     }
 
     private static void quickSort(int[] arr){
+        quickSort(arr, 0, arr.Length-1);
+    }
+
+    private static void quickSort(int[] arr, int left, int right){
+        if (left >= right) return;
+		int compare = arr[left];
+        int low = left;
+        int high = right;
+        while(left < right){
+            while(left < right && arr[right] >= compare){ // 从后往前找到一个小于compare的数
+            	right--;
+            }
+            /*比key小的放左边*/
+            arr[left] = arr[right];
         
+            while(left < right && arr[left] <= compare){ // 从前往后找到一个大于compare的数
+            	left ++;
+            }
+			/*比key大的放右边*/
+            arr[right] = arr[left];
+        }
+		/*左边都比key小，右边都比key大。//将key放在游标当前位置。//此时low等于high */
+        arr[left] = compare;
+
+    	quickSort(arr, low, left-1);
+    	quickSort(arr, left+1, high);
     }
 }
+
+ 
