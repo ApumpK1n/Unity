@@ -1,0 +1,13 @@
+Unity资源管理：
+
+1.静态添加在场景中的GameObject引用的资源，在Build时会自动打包。这类资源在场景加载时一起加载。
+
+2.Resources目录下的资源，不管目录结构，文件名是Resources就算。build时也会打入包中。使用Resource.Load加载
+
+3.AssetBundle简称AB包，这类资源首先要打成AB包的形式，然后使用AB包加载。
+
+4.使用AssetDatabase.LoadAssetAtPath 仅作用于编辑器资源加载。这个接口加载资源很慢，可能会导致GC爆增。
+
+
+Unity编辑器扩展： 添加[MenuItem()]即可
+Unity制作动态emoji表情：1.帧动画播放即可
