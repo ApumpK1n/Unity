@@ -56,7 +56,6 @@ class TestCopy : ICloneable{
 
     public Param param {get; set;}
 
-
     public object Clone(){
         return this.MemberwiseClone();
     }
@@ -78,3 +77,15 @@ class Param{
         return this.Name;
     }
 }
+
+// JsonConvert:
+// 私有成员不会被克隆
+
+/*
+public static T DeepCopy<T>(this T value)
+{
+    string json = JsonConvert.SerializeObject(value);
+
+    return JsonConvert.DeserializeObject<T>(json);
+}   
+*/
