@@ -10,7 +10,7 @@ Cocos2dx plist帧动画资源生成Unity Animator插件
 
  - 右键点击TestAnimatorCreate -> BuildAnimation -> ParseCocosToAnimation
  - 点击BuildAnimation，如图：
- ![](./Doc/2.png)
+  ![](./Doc/3.png)
 
  - 创建完成后在资源同目录生成Animation、Controller、prefab
 
