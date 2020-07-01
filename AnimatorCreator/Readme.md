@@ -14,5 +14,7 @@ Cocos2dx plist帧动画资源生成Unity Animator插件
 
  - 创建完成后在资源同目录生成Animation、Controller、prefab
 
+- 详情可见TestCreator
+
 ## 目前支持
 Cocos2dx plist帧动画 format=2, 3的解析
