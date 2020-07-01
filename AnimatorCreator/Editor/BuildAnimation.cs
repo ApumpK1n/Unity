@@ -256,7 +256,6 @@ namespace BuildAnimation
             {
                 string path = Parser.SpriteFrameMgr.AddSpriteFrameWithPlist(DataPathToAssetPath(plist.FullName));
                 UnityEngine.Object[] sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath(DataPathToAssetPath(path));
-
                 foreach(Sprite sprite in sprites)
                 {
                     string animationname = GetAnimationName(sprite.name);

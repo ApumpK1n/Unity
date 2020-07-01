@@ -26,7 +26,7 @@ namespace BuildAnimation.Parser
             metaData.format = (int)dMetaData["format"];
             metaData.realTextureFileName = dMetaData["realTextureFileName"] as string;
             metaData.size = PlistDictionary.ParseVector2(dMetaData["size"] as string);
-            metaData.smartpdate = dMetaData["smartpdate"] as string;
+            metaData.smartpdate = dMetaData["smartupdate"] as string;
             metaData.textureFileName = dMetaData["textureFileName"] as string;
             return metaData;
         }
