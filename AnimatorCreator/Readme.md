@@ -15,3 +15,6 @@ AnimatorCreator是一款Unity编辑器插件。针对Cocos2dx帧动画资源无�
 
 ## 目前支持
 Cocos2dx plist帧动画 format=2, 3的解析
+
+## 实现流程
+![](./Doc/流程.png)
