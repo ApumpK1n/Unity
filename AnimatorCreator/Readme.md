@@ -1,8 +1,5 @@
 ## 简介
-Cocos2dx plist帧动画资源生成Unity Animator插件
-
-## 目的
-为了解决Cocos2dx 帧动画资源无法在Unity中直接使用, 需要手动制作的问题。
+AnimatorCreator是一款Unity编辑器插件。针对Cocos2dx帧动画资源无法直接在Unity中使用，需要重新制作帧动画资源的现状。为了减少重复制作资源的工作量，故设计一款Unity插件，使用Cocos2dx资源自动生成Unity所需帧动画资源，解决上述问题。
 
 ## 如何使用
  - 将cocos2dx帧动画资源 plist文件, png文件, xml文件分成三个文件夹。如图：
