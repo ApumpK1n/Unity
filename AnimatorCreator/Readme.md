@@ -4,11 +4,11 @@ AnimatorCreator是一款Unity编辑器插件。针对Cocos2dx帧动画资源无�
 ## 如何使用
  - 将cocos2dx帧动画资源 plist文件, png文件, xml文件分成三个文件夹。如图：
 ![](./Doc/1.png)
+   其中plist文件后缀需改为txt
 
  - 右键点击TestAnimatorCreate -> BuildAnimation -> ParseCocosToAnimation
  - 点击BuildAnimation，如图：
   ![](./Doc/3.png)
-  其中plist文件后缀需改为txt
 
  - 创建完成后在资源同目录生成Animation、Controller、prefab
 
