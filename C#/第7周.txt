@@ -1,0 +1,46 @@
+unity---各种资源对应的格式：
+
+1.文本格式
+支持后缀：txt、xml；
+
+打包后的类型：TextAsset，数据保存在TextAsset的text属性中。
+
+2.二进制格式
+支持后缀：bytes；
+
+打包后的类型：TextAsset，数据保存在TextAsset的bytes属性中。
+
+3.预制件格式
+支持后缀：prefab；
+
+打包后的类型：GameObject，加载后还需要调用Instantiate函数实例化才能使用。
+
+4.FBX文件格式
+支持后缀：fbx；
+
+打包后的类型：添加了Animator（Mecanim动画系统）或者添加了Animation（Legacy动画系统）的GameObject，模型加载后还需要调用Instantiate函数实例化才能添加到场景，只包含动画的FBX文件动画剪辑的获取方法如下：
+
+5.Mecanim动画
+Mecanim中必须制作为预制件进行加载，所以加载后的人物都是配置好的，不存在需要加载Animation Clip的情况。
+
+6. 图片格式
+支持后缀：bmp、jpg、png；
+
+打包后的类型：Texture2D、Sprite。
+
+默认Texture2D，比如使用AssetDatabase.LoadMainAssetAtPath方法加载是就是Texture2D的类型，如果希望打包后是Sprite类型（用在2D游戏上时）可以使用下面的方法加载：
+
+AssetDatabase.LoadAssetAtPath("Assets/Image.png", typeof(Sprite));
+
+7.音乐格式
+支持后缀：aiff、wav、mp3、ogg；
+
+打包后的类型：AudioClip。
+
+8.ScriptableObject格式
+支持后缀：asset；
+
+打包后的类型：ScriptableObject的派生类。
+
+
+Unity OnPointExit事件异常，被其他物体挡住的处理： 将被挡住物体加上CanvasGroup组件并取消勾选Blocks Raycasts和Ignore Parent Group

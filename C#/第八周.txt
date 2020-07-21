@@ -1,0 +1,41 @@
+Cocos2dx内存管理机制：
+当物体被创建时给予一个初始的引用计数1，当在每一帧结束时，我们会对场景中所有对象进行引用计数的释放操作，如果释放后引用计数变为零，则删除该对象。可以通过调用相关的保留或者释放方法对当前场景对象进行引用计数的增减。
+1.引用计数机制：创建时引用计数为1，被其他对象引用时+1, Release时-1
+2.对象池：每帧结束时调用当前场景对象池中对象的Release方法使引用计数-1，如果引用计数为0，则清理对象。
+
+Python内存管理机制
+1.引用计数
+引用计数增加：
+1)对象被创建：x=4
+2)对象被引用：y=x
+3) 作为参数传递给函数：foo(x)
+4) 作为容器对象的一个元素：a=[1,x]
+引用计数减少
+1)对象离开作用域：如上面的foo函数结束时 x的引用计数减1
+2)对象的别名被显示的销毁：del x;
+3)对象的一个别名被赋值给其他对象：x=789
+4)对象从一个容器中移除： List.remove(x)
+5)窗口对象本身被销毁：del List
+
+2.垃圾回收
+1)当内存中有不再使用的部分时，垃圾收集器就会把他们清理掉。它会去检查那些引用计数为0的对象，然后清除其在内存的空间。
+
+3.内存池机制
+1.如果请求分配的内存在1-256字节，python使用自己的内存管理系统pymalloc，否则使用系统的 malloc。
+
+Cocos2dx 节点绘制顺序
+节点的渲染顺序跟节点的三个成员变量有关（_localZOrder、_globalZOrder、_orderOfArrival）
+分别对应三个设置函数setLocalZOrder、setGlobalZOrder、setOrderOfArrival。
+无论是_localZOrder、_globalZOrder、_orderOfArrival都是越大的越后渲染，越小的越先渲染，
+而且有_globalZOrder的优先级大于_localZOrder的优先级大于_orderOfArrival的优先级。
+所以我们判断节点间的渲染（绘制）顺序时应先对比他们的_globalZOrder值，如若相等，再对比他们的_localZOrder值，如若相等，再对比他们的_orderOfArrival值。
+其中，_orderOfArrival值在调用addChild函数是自动给出，一般我们不调用setOrderOfArrival函数去更改节点间的渲染（绘制）顺序。
+
+当两个节点的LocalZOrder值相等时，先被add的先被渲染，后add的后渲染——原因就在于：每次调用addChild时，在addChild函数内部给了node的_orderOfArrival成员变量一个值，而且更后作为参数调用addChild的节点得到的_orderOfArrival值更大。而拥有更大的_orderOfArrival的节点更后渲染。
+
+补充：当采用LocalZOrder作为节点渲染（绘制）顺序的判断值时，父节点的LocalZOrder不与子节点的LocalZOrder值作比较。
+子节点中LocalZOrder值<0的节点作为以父节点为根节点的树的左子树的根节点，大于0的作为右子树的根节点。
+所以在中序遍历下，先（渲染）绘制子节点中LocalZOrder值小于0的子节点，再渲染（绘制）父节点，再渲染LocalZOrder值大于0的子节点。
+
+
+
