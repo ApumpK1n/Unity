@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e202f471f650e654bb55170795f51440, type: 3}
-  m_Name: New Switchable Tile
+  m_Script: {fileID: 11500000, guid: 029d5786d72fa0a41954bfad7ab1744b, type: 3}
+  m_Name: New Plane Tile
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 6320572342612093594, guid: df0b6f9e93b65bc4792e6cf7849c5e37,
     type: 3}
@@ -35,6 +35,3 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  sprites:
-  - {fileID: 21300000, guid: 0ada68ea3ecdf124d9189d0fcedf7096, type: 3}
-  m_TileColliderType: 1

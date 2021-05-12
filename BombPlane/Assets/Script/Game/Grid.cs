@@ -4,15 +4,20 @@ using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using System.Collections;
 
+// tileMap坐标系为向右为正，向上为正
+// tileMap row和col相反
+
+// 数据坐标系向右为正，向下为正
 //A B C 
 //B
 //C
 
 public class Grid : MonoBehaviour
 {
-
-    public Tile planeTile;
+    public SwitchableTile wallTile;
+    public PlaneTile planeTile;
     public Tilemap tileMap;
+    public Plane objectPlane;
 
     private int col = 9;
     private int row = 9;
@@ -21,41 +26,153 @@ public class Grid : MonoBehaviour
 
     private List<Plane> planes = new List<Plane>();
 
-    public void Start()
+
+
+    public void OnEnable()
     {
-        checkerboard = new int[row, col];
-        planes.Add(new Plane());
+        UserInput._OnClick += _OnClick;
+        UserInput._OnDrag += _OnDrag;
+    }
+
+    private void _OnClick()
+    {
+        Collider2D collider = Physics2D.OverlapPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition), Layers.PlaneMask);
+        if (collider)
+        {
+            Vector3 world = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (IsTileOfType<PlaneTile>(tileMap, tileMap.WorldToCell(world)))
+            {
+                Plane plane = collider.GetComponent<Plane>();
+                plane.Toward();
+            }
+        }
 
         foreach (Plane plane in planes)
         {
-            plane.SetData(checkerboard);
+            plane.RefreshData(checkerboard, new Vector2Int(0, 0));
         }
-        StartCoroutine(Draw());
-        //Draw();
+        Draw();
     }
 
-    public IEnumerator Draw()
+    public bool IsTileOfType<T>(Tilemap tilemap, Vector3Int position) where T : TileBase
     {
-        Vector3Int currentCell = tileMap.WorldToCell(transform.position);
+        TileBase targetTile = tilemap.GetTile(position);
 
-        Vector3 tilePosition;
+        if (targetTile != null && targetTile is T)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void _OnDrag(Vector3 pre, Vector3 touch)
+    {
+        Vector3 preWorld = Camera.main.ScreenToWorldPoint(pre);
+        Vector3 touchWorld = Camera.main.ScreenToWorldPoint(touch);
+
+        Vector3Int cell = tileMap.WorldToCell(touchWorld) - tileMap.WorldToCell(preWorld);
+        Vector2Int offset = CovertTileMapPosToDataPos(new Vector2Int(cell.x, cell.y));
+
+        Collider2D collider = Physics2D.OverlapPoint(touchWorld, Layers.PlaneMask);
+        if (collider)
+        {
+            if (Mathf.Abs(offset.x) > 0 || Mathf.Abs(offset.y) > 0)
+            {
+                offset.x = Mathf.Min(offset.x, 1);
+                offset.y = Mathf.Min(offset.y, 1);
+                offset.x = Mathf.Max(offset.x, -1);
+                offset.y = Mathf.Max(offset.y, -1);
+                Plane plane = collider.GetComponent<Plane>();
+                plane.Move(offset);
+                SetPlanePos(plane);
+
+            }
+        }
+        foreach (Plane plane in planes)
+        {
+            plane.RefreshData(checkerboard, new Vector2Int(0, 0));
+        }
+
+        Draw();
+    }
+
+    private Vector2Int CovertDataPosToTileMapPos(Vector2Int data)
+    {
+        Vector2Int cellPos = new Vector2Int(0, 0)
+        {
+            x = data.y,
+            y = -data.x
+        };
+        return cellPos;
+    }
+
+    private Vector2Int CovertTileMapPosToDataPos(Vector2Int cellPos)
+    {
+        Vector2Int _ = new Vector2Int(0, 0)
+        {
+            y = cellPos.x,
+            x = -cellPos.y
+        };
+        return _;
+    }
+
+    private void SetPlanePos(Plane plane)
+    {
+        Vector2Int cellPos = CovertDataPosToTileMapPos(plane.centerPos);
+        Vector3 pos = tileMap.CellToWorld(new Vector3Int(cellPos.x, cellPos.y, 0));
+
+        plane.transform.position = pos;
+
+        plane.FixMovePlanePos();
+    }
+
+    public void Start()
+    {
+        checkerboard = new int[row, col];
+
+        Plane plane = Instantiate(objectPlane);
+        SetPlanePos(plane);
+
+        Plane plane1 = Instantiate(objectPlane);
+        plane1.centerPos = new Vector2Int(1, 2);
+        SetPlanePos(plane1);
+
+        planes.Add(plane);
+        planes.Add(plane1);
+        foreach (Plane p in planes)
+        {
+            p.RefreshData(checkerboard, new Vector2Int(0, 0));
+        }
+        Draw();
+    }
+
+    public void Draw()
+    {
         Vector3Int coordinate = new Vector3Int(0, 0, 0);
+
         for (int i = 0; i < tileMap.size.x; i++)
         {
             for (int j = 0; j < tileMap.size.y; j++)
             {
-                coordinate.x = i; coordinate.y = j;
-                tilePosition = tileMap.CellToWorld(coordinate);
+                Vector2Int pos = CovertDataPosToTileMapPos(new Vector2Int(i, j));
+                coordinate.x = pos.x;
+                coordinate.y = pos.y;
+
                 TileBase tileBase = tileMap.GetTile(coordinate);
-                if (tileBase && tileBase is SwitchableTile)
+                if (tileBase)
                 {
-                    SwitchableTile tile = (SwitchableTile)tileBase;
-                    tile.sprite = tile.GetSprite(1);
+                    if (checkerboard[i, j] != 0)
+                    {
+                        tileMap.SetTile(coordinate, null);
+                        tileMap.SetTile(coordinate, planeTile);
+                    }
+                    else
+                    {
+                        tileMap.SetTile(coordinate, null);
+                        tileMap.SetTile(coordinate, wallTile);
+                    }
                 }
-   
-                Debug.Log(string.Format("Position of tile [{0}, {1}] = ({2}, {3})", coordinate.x, coordinate.y, tilePosition.x, tilePosition.y));
-                yield return new WaitForSeconds(0.5f);
-                tileMap.RefreshTile(coordinate);
             }
         }
     }
