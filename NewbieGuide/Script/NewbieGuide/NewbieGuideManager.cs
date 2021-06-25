@@ -10,16 +10,19 @@ public enum NewbieGuideType
     Default = 0,
     FirstLogin = 1,
     EnterIsland = 2,
-    IntoBucket = 8,
-    GoHome = 9,
-    Order = 3,
-    SelectBait = 4,
-    SkipTime = 5,
-    ChangePit = 7,
-    OpenJar = 10,
-    CatchOctopus = 6,
-    FinishOrder = 11,
-    GoBeach = 12,
+    IntoBucket = 3,
+    CatchFish = 4,
+    GoHome = 5,
+    Order = 6,
+    FinishOrder = 7,
+    GoBeach = 8,
+    SelectBait = 9,
+    SkipTime = 10,
+    OpenJar = 11,
+    ChangePit = 12,
+    CatchOctopus = 13,
+    HighStrengthTip = 14,
+    GoodAreaTip = 15,
 }
 
 
@@ -31,6 +34,8 @@ public class NewbieGuideManager : SingletonBehaviour<NewbieGuideManager>
 
     private Dictionary<NewbieGuideType, List<Tutorials>> m_NewbieGuides = new Dictionary<NewbieGuideType, List<Tutorials>>();
     public List<int> DoneNewbieGuide = new List<int>();
+
+    private NewbieGuideType currentType = NewbieGuideType.Default;
 
     public override void Awake()
     {
@@ -85,13 +90,18 @@ public class NewbieGuideManager : SingletonBehaviour<NewbieGuideManager>
     {
         if (!CanEnterNewbieGuide(type)) return;
         m_camera.gameObject.SetActive(true);
-        
+
+        currentType = type;
+
         newbieGuideSequence.StartGuide(m_NewbieGuides[type], data);
     }
     
-    public void AddNewbieGuideData(NewbieGuideData data)
+    public void AddNewbieGuideData(NewbieGuideType type, NewbieGuideData data)
     {
-        newbieGuideSequence.AddNewbieGuideData(data);
+        if (currentType == type)
+        {
+            newbieGuideSequence.AddNewbieGuideData(data);
+        }
     }
 
     public void StopNowNewbieGuide()

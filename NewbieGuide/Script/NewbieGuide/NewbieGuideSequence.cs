@@ -35,6 +35,9 @@ public class NewbieGuideSequence : SingletonBehaviour<NewbieGuideSequence>
     private Coroutine nextStep;
     private bool End = true;
     private RectTransform currentShowTarget;
+    private float longPressTimer = 0f;
+    private bool down = false;
+    private float AllAreaCanClickTimer = 0f;
 
     public override void Awake()
     {
@@ -100,6 +103,8 @@ public class NewbieGuideSequence : SingletonBehaviour<NewbieGuideSequence>
         {
             index += 1;
         }
+        longPressTimer = 0f;
+        AllAreaCanClickTimer = 0f;
 
         Init();
         RefreshMask();
@@ -142,17 +147,55 @@ public class NewbieGuideSequence : SingletonBehaviour<NewbieGuideSequence>
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (currentInfo == null) return;
+        int triggerType = currentInfo.TriggerType;
+        if (triggerType == 0)
         {
-            if (currentGuidance.IsInActiveArea(Input.mousePosition) && nextStep == null)
+            if (Input.GetMouseButtonDown(0) && currentGuidance.IsInActiveArea(Input.mousePosition) && nextStep == null)
             {
                 ClickNextStep();
+            }
+        }
+        else if (triggerType == 1)
+        {
+            AllAreaCanClickTimer += Time.unscaledDeltaTime;
+            if (AllAreaCanClickTimer >= 2f && Input.GetMouseButtonDown(0) && nextStep == null)
+            {
+                ClickNextStep();
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0) && currentGuidance.IsInActiveArea(Input.mousePosition))
+            {
+                down = true;
+                longPressTimer = 0;
+            }
+            if (down && currentGuidance.IsInActiveArea(Input.mousePosition))
+            {
+                longPressTimer += Time.unscaledDeltaTime;
+
+                if (longPressTimer >= 0.5f && nextStep == null)
+                {
+                    ClickNextStep();
+                    longPressTimer = 0f;
+                }
+
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                down = false;
+                longPressTimer = 0f;
             }
         }
     }
 
     private void ClickNextStep()
     {
+        if (currentInfo != null)
+        {
+            ReportManager.ReportGameGuide(currentInfo.id, currentInfo.Name);
+        }
         currentTarget.gameObject.SetActive(false);
         currentShowTarget.gameObject.SetActive(false);
         Mask.gameObject.SetActive(false);
@@ -228,10 +271,11 @@ public class NewbieGuideSequence : SingletonBehaviour<NewbieGuideSequence>
         currentShowTarget.gameObject.layer = Layers.Guide.layer;
         currentShowTarget.anchoredPosition3D = new Vector3(targetLocal.x, targetLocal.y, 100);
 
-        Transform[] childs = currentShowTarget.GetComponentsInChildren<Transform>();
+        Transform[] childs = currentShowTarget.GetComponentsInChildren<Transform>(true);
         for (int i = 0; i < childs.Length; i++)
         {
             childs[i].gameObject.layer = Layers.Guide.layer;
+            childs[i].gameObject.SetActive(true);
         }
 
         currentTarget.gameObject.SetActive(false);
@@ -256,6 +300,11 @@ public class NewbieGuideSequence : SingletonBehaviour<NewbieGuideSequence>
 
     public void RefreshMask()
     {
+        Vector3 targetPos = m_targetCamera.WorldToScreenPoint(currentTarget.position);
+        Vector2 targetLocal;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, targetPos, m_camera, out targetLocal);
+        currentShowTarget.anchoredPosition3D = new Vector3(targetLocal.x, targetLocal.y, 100);
+
         Mask.gameObject.SetActive(true);
 
         Material material;
